@@ -1,9 +1,10 @@
 <template>
-  <v-card
-    outlined
-    style="border-radius: 10px"
-  >
-  <v-card-text>
+  <v-col cols="12">
+    <v-card
+      outlined
+      style="border-radius: 10px"
+    >
+    <v-card-text>
     <h2>센터1</h2>
     <div class="attendanceWrap">
 
@@ -59,34 +60,76 @@
 
   </v-card-text>
 
-
-  <v-dialog
-    width="460"
-    v-model="dialog"
-  >
+    <v-dialog width="460" v-model="dialog">
     <v-card
       color="#f6f6f6"
     >
-      <div class="popup_head">
-        <v-card-title>작업일지작성</v-card-title>
-        <v-icon @click="dialog=false">mdi-close</v-icon>
-      </div>
-      <div class="popup_container">
-        <v-list>
-          <em>1</em>업체선택
-        </v-list>
-      </div>
+      <v-col cols="12">
+        <div class="popup_head">
+          <v-card-title>작업일지작성</v-card-title>
+          <v-icon @click="dialog=false">mdi-close</v-icon>
+        </div>
+        <div class="popup_container">
+          <v-col cols="12" class="workStep">
 
+            <v-list>
+              <v-list-group
+                v-for="item in items"
+                :key="item.title"
+                v-model="item.active"
+                :prepend-icon="item.action"
+                no-action
+              >
+                <template v-slot:activator>
+                  <v-list-item-content>
+                    <v-list-item-title>{{item.title}}</v-list-item-title>
+                  </v-list-item-content>
+                </template>
+
+                <v-list-item
+                  v-for="child in item.items"
+                  :key="child.title"
+                >
+                  <v-list-item-content>
+                    <v-list-item-title>{{child.title}}</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list-group>
+            </v-list>
+
+            <v-btn
+              depressed
+              block
+              height="42"
+              id="workSubmit"
+            >등록하기</v-btn>
+          </v-col>
+
+        </div>
+      </v-col>
     </v-card>
   </v-dialog>
 
-</v-card>
+    </v-card>
+  </v-col>
 </template>
 <script>
 export default {
   data() {
     return {
       dialog: false,
+      items: [
+        {
+          items: [{ title: 'List Item' },{ title: 'List Item' },{ title: 'List Item' }],
+          title: '업체 선택',
+        },
+        {
+          items: [{ title: 'List Item' }],
+          title: '항목',
+        },
+      ],
+      companyName: ['하비언니','블루팝스','메리어라운드','(주)더샵스토리'],
+      itemName: ['(새벽) 검수/포장', '(주간/야간) 검수 포장'],
     }
   },
   methods: {
@@ -151,5 +194,18 @@ export default {
 
 .endWork {
   border-radius: 10px;
+}
+
+#workSubmit {
+  margin: 0;
+  margin-top: 30px;
+  background: #c84726;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
+  line-height: 42px;
+  font-weight: 900;
+  border: none;
 }
 </style>

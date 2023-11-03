@@ -59,6 +59,7 @@
           src="http://doall.comondev.com/data/skin/front/doall/img/common/logo.png?ver=0.1"
           max-height="45"
           max-width="135"
+          style="left: -20px;"
           class="mx-auto"
         ></v-img>
       </div>

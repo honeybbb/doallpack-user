@@ -1,0 +1,17 @@
+/*@import url('https://cdn.jsdelivr.net/gh/sun-typeface/SUIT/fonts/static/woff2/SUIT.css');*/
+/*body *  {font-family: "SUIT", "Helvetica Neue",Helvetica,"Apple SD Gothic Neo",Arial,"Malgun Gothic","Noto Sans",sans-serif;}*/
+* {
+  font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+}
+
+.w-460 {
+  width: 460px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.text-white {
+  color: #FFFFFF;
+}

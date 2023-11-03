@@ -16,7 +16,8 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    '~assets/common.css',
+    '~/assets/css/common.css',
+    '~/assets/css/variables.scss',
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -28,7 +29,6 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/eslint
-    '@nuxtjs/eslint-module',
     '@nuxtjs/vuetify',
     // With options
     ['@nuxtjs/vuetify', { /* module options */ }]

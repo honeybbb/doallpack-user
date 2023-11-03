@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <v-bottom-navigation
       height="65"
       background-color="#3f4850"
@@ -7,34 +7,30 @@
       fixed
     >
       <div class="w-460" style="align-self: center;">
-        <ul class="bottom-wrap" >
-          <li>
+        <div class="bottom-wrap" >
+
             <v-btn value="home" to="/">
               <div class="d-block">
                 <v-icon>mdi-home-outline</v-icon>
-                <p>홈</p>
+                <p class="mb-0">홈</p>
               </div>
             </v-btn>
-          </li>
 
-          <li>
             <v-btn value="list" to="/work/list">
               <div class="d-block">
                 <v-icon>mdi-calendar-check-outline</v-icon>
-                <p>작업내역</p>
+                <p class="mb-0">작업내역</p>
               </div>
             </v-btn>
-          </li>
 
-          <li>
-            <v-btn value="time" to="/work/timeList">
+            <!--v-btn value="time" to="/work/timeList">
               <div class="d-block">
                 <v-icon >mdi-clock-outline</v-icon>
                 <p>작업시간</p>
               </div>
-            </v-btn>
-          </li>
-        </ul>
+            </v-btn-->
+
+        </div>
       </div>
     </v-bottom-navigation>
   </div>
@@ -58,7 +54,8 @@ export default {
 }
 
 .bottom-wrap p {
-  font-size: 0.8em;
+  //font-size: 0.8rem;
   margin-top: 2px;
+  margin-bottom: 0;
 }
 </style>

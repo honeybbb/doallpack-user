@@ -1,8 +1,8 @@
 <template>
 <!--  <v-col style="background-color: #f1f3f4;">-->
     <v-container style="max-width: 460px;" fill-height>
-      <v-layout align-center row wrap>
-        <v-flex style="padding: 30px;">
+      <v-layout row wrap>
+        <v-flex>
           <work-main />
 
         </v-flex>
