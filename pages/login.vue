@@ -17,16 +17,16 @@
                     placeholder="아이디"
                     id="loginId"
                     name="loginId"
-                    v-model="userInfo.loginId"
-                    @keypress.enter="loginUser"
+                    v-model="memId"
+                    @keypress.enter="login"
                   >
                   <input
                     type="password"
                     placeholder="비밀번호"
                     id="loginPwd"
                     name="loginPwd"
-                    v-model="userInfo.loginPwd"
-                    @keypress.enter="loginUser"
+                    v-model="memPw"
+                    @keypress.enter="login"
                   />
                 </div>
 
@@ -49,7 +49,7 @@
                     large
                     block
                     color="#c84726"
-                    @click="loginUser"
+                    @click="login"
                   >
                     <span>로그인</span>
                   </v-btn>
@@ -72,15 +72,11 @@
 </template>
 
 <script>
-// import axios from "axios";
-
 export default {
   data() {
     return {
-      userInfo: {
-        loginId: '',
-        loginPwd: '',
-      },
+      memId: '',
+      memPw: '',
       authValue: false,
     };
   },
@@ -91,21 +87,33 @@ export default {
 
   },
   methods: {
-    loginUser() {
+    async login() {
+      let saveData = {};
       // const authValue = this.authValue  // 로그인 인증
-      const loginId = this.userInfo.loginId
-      const loginPwd = this.userInfo.loginPwd
+      saveData.memId = this.memId
+      saveData.memPw = this.memPw
 
-      if(loginId === undefined) {
+      if(saveData.memId === undefined) {
         alert('아이디를 입력해주세요.')
+        return
       }
 
-      if(loginPwd === undefined) {
+      if(saveData.memPw === undefined) {
         alert('패스워드를 입력해주세요.')
+        return
       }
 
-      this.$router.push('/')
+      await this.$store.dispatch('loginUser', saveData)
+        .then(res => {
+          if(this.$store.state.memNo) {
+            // 로그인 성공시 수행할 로직 작성
+            this.$router.push('/')
+          }
 
+        }).catch(err => {
+          console.log(err, 'err')
+          alert('아이디 또는 패스워드를 확인해주세요.')
+        })
     }
   },
 };

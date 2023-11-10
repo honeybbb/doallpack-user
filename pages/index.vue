@@ -3,7 +3,7 @@
     <v-container style="max-width: 460px;" fill-height>
       <v-layout row wrap>
         <v-flex>
-          <work-main />
+          <work-main :work-area="workArea"/>
 
         </v-flex>
       </v-layout>
@@ -13,31 +13,52 @@
 
 <script>
 import workMain from "@/components/work/workMain.vue";
+import axios from "axios";
 export default {
   components: {
     workMain
   },
   data() {
     return {
-      drawer: false,
-      group: null,
+      workArea: [],
       authValue: false,
+      ipAddress: '',
     }
   },
-  watch: {
-    group () {
-      this.drawer = false
-    },
-  },
   methods: {
-    logOutUser() {
+    isAuthenticated() {
+      const authkey = localStorage.getItem('memNo')
 
+      if(!authkey) {
+        this.$router.push('/login')
+      }
+    },
+    getIpClient() {
+      axios
+        .get('https://api64.ipify.org?format=json')
+        .then(response => {
+          this.ipAddress = response.data.ip;
+          this.getMyWorkGroup(this.ipAddress)
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    async getMyWorkGroup(val) {
+      const params = {
+        val: val
+      }
+
+      await axios.get('http://localhost:3001/v1/member/work/group', { params })
+        .then(res => {
+          console.log(res.data.data)
+          this.workArea = res.data.data
+        })
     }
   },
   mounted() {
-    // if(!this.authValue) {
-    //   this.$router.push('/login')
-    // }
+    this.isAuthenticated()
+    this.getIpClient()
   }
 }
 </script>

@@ -1,11 +1,13 @@
 <template>
   <v-col cols="12">
     <v-card
+      v-for="group in workArea"
       outlined
       style="border-radius: 10px"
+      class="mb-2"
     >
     <v-card-text>
-    <h2>센터1</h2>
+    <h2>{{ group.groupNm }}</h2>
     <div class="attendanceWrap">
 
       <div class="attendanceDate">
@@ -20,7 +22,7 @@
         height="42"
         block
         depressed
-        @click="startWork"
+        @click="startWork(group)"
       >
         <span>작업시작</span>
       </v-btn>
@@ -74,7 +76,7 @@
 
             <v-list>
               <v-list-group
-                v-for="item in items"
+                v-for="item in contracts"
                 :key="item.title"
                 v-model="item.active"
                 :prepend-icon="item.action"
@@ -114,11 +116,16 @@
   </v-col>
 </template>
 <script>
+import axios from "axios";
+
 export default {
+  props: {
+    workArea: Array,
+  },
   data() {
     return {
       dialog: false,
-      items: [
+      contracts: [
         {
           items: [{ title: 'List Item' },{ title: 'List Item' },{ title: 'List Item' }],
           title: '업체 선택',
@@ -128,13 +135,21 @@ export default {
           title: '항목',
         },
       ],
-      companyName: ['하비언니','블루팝스','메리어라운드','(주)더샵스토리'],
-      itemName: ['(새벽) 검수/포장', '(주간/야간) 검수 포장'],
     }
   },
   methods: {
     startWork () {
-      console.log('작업시작')
+      const memNo = this.$store.state.memNo
+      console.log(memNo,'memNo')
+      const params = new URLSearchParams();
+      params.append('memNo', memNo)
+      axios.post('http://localhost:3001/v1/member/work/start', params)
+        .then(res => {
+          console.log(res)
+          return
+        })
+
+
       alert('[출근]처리가 완료되었습니다.')
       const diary = document.getElementsByClassName('attendanceWrite')[0]
       diary.className = 'attendanceWrite cursor-pointer'

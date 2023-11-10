@@ -84,5 +84,7 @@ export default {
 </script>
 
 <style scoped>
-
+::v-deep .v-toolbar__content {
+  justify-content: center;
+}
 </style>

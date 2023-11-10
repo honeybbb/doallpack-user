@@ -1,10 +1,11 @@
 <template>
   <v-app>
-    <headerNav />
+    <headerNav v-if="$route.path!=='/login'?'d-none':''"/>
     <v-main style="background-color: #f1f3f4;">
+<!--      {{$route.path}}-->
       <nuxt />
     </v-main>
-    <bottomNav />
+    <bottomNav v-if="$route.path!=='/login'?'d-none':''"/>
   </v-app>
 </template>
 
