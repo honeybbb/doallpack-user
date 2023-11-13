@@ -36,6 +36,7 @@ const store = () => new Vuex.Store({
         }).catch(err => {
           console.log(err, 'err')
           alert('아이디 또는 패스워드를 확인해주세요.')
+        return
       })
 
     }
