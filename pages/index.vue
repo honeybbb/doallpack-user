@@ -37,9 +37,7 @@ export default {
       axios
         .get('https://api64.ipify.org?format=json')
         .then(response => {
-          //this.ipAddress = response.data.ip;
-          //this.ipAddress = '121.132.120.210';
-          this.ipAddress = '112.217.174.86';
+          this.ipAddress = response.data.ip;
           this.getMyWorkGroup(this.ipAddress)
         })
         .catch(error => {

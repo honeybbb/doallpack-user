@@ -1,7 +1,7 @@
 <template>
   <v-col cols="12">
     <v-card
-      v-if="workArea.length>0"
+      v-if="workArea.length > 0"
       v-for="item in workArea"
       outlined
       style="border-radius: 10px"
@@ -18,29 +18,30 @@
         </div>
 
         <v-btn
+          v-if="!doing"
           class="startWork"
           color="#c84726"
           height="42"
           block
           depressed
-          @click="startWork(item)"
-          :data-companySno="item.sno"
+          @click="startWork(item.sno)"
         >
           <span>작업시작</span>
         </v-btn>
 
         <v-btn
-          class="endWork d-none"
+          v-else
+          class="endWork"
           color="#39a759"
           height="42"
           block
           depressed
-          @click="endWork"
+          @click="endWork(item.sno)"
         >
           <span>작업종료</span>
         </v-btn>
 
-        <div class="attendanceInfo d-none">
+        <div class="attendanceInfo">
           <ul style="list-style: none; display: flex; justify-content: space-between;">
             <li>출근</li>
             <li>03:59 PM</li>
@@ -57,7 +58,9 @@
           <v-icon
             small
             color="#177ee3"
-          >mdi-pencil-circle-outline</v-icon>
+          >
+            mdi-pencil-circle-outline
+          </v-icon>
           작업일지작성
         </div>
       </div>
@@ -97,13 +100,15 @@
         <div class="popup_container">
           <v-col cols="12" class="workStep">
             <v-list>
+              <template v-for="list in contracts">
               <v-list-group
                 :value="true"
                 class="workStep"
-
+                v-for="item in list.unitList"
               >
-                <v-list-item></v-list-item>
+                <v-list-item v-if="item.useFl == 'y'">{{item}}</v-list-item>
               </v-list-group>
+              </template>
             </v-list>
             <v-btn
               depressed
@@ -134,42 +139,38 @@ export default {
     }
   },
   methods: {
-    startWork () {
-      const memNo = this.$store.state.memNo
-      console.log(memNo,'memNo')
-      // const params = new URLSearchParams();
-      // params.append('memNo', memNo)
-      // axios.post('http://localhost:3001/v1/member/work/start', params)
-      //   .then(res => {
-      //     console.log(res)
-      //     return
-      //   })
+    startWork (companySno) {
+      //const memNo = this.$store.state.memNo
+      const memNo = localStorage.getItem('memNo')
+      const params = new URLSearchParams();
+      params.append('memNo', memNo)
+      params.append('companySno', companySno)
+
+      axios.post('http://localhost:3001/v1/work/member/start', params)
+        .then(res => {
+          console.log(res)
+          this.getWorkFl()
+        })
 
 
       alert('[출근]처리가 완료되었습니다.')
       const diary = document.getElementsByClassName('attendanceWrite')[0]
       diary.className = 'attendanceWrite cursor-pointer'
-      console.log(diary, 'd')
+      //console.log(diary, 'd')
     },
-    endWork () {
-      alert('[퇴근]처리가 완료되었습니다.')
-    },
-    getDoingWork() {
-      const memNo = this.$store.state.memNo
-      axios.get('http://localhost:3001/v1/work/today/'+memNo)
+    endWork (companySno) {
+      const memNo = localStorage.getItem('memNo')
+      const params = new URLSearchParams();
+      params.append('memNo', memNo)
+      params.append('companySno', companySno)
+
+      axios.post('http://localhost:3001/v1/work/member/end', params)
         .then(res => {
-          if(res.data.data.length > 0) {
-            this.doing = true
-          }
+          console.log(res)
+          this.getWorkFl()
         })
-    },
-    getScmGroupInfo() {
-      // const sno = this.workArea.sno
-      // axios.get('http://localhost:3001/v1/scm/manage/group/info/'+sno)
-      //   .then(res => {
-      //     console.log(res.data.data)
-      //
-      //   })
+
+      alert('[퇴근]처리가 완료되었습니다.')
     },
     async getScmContract() {
       await axios.get('http://localhost:3001/v1/scm/contract')
@@ -185,11 +186,24 @@ export default {
           this.contracts = result
 
         })
+    },
+    getWorkFl() {
+      const memNo = localStorage.getItem('memNo')
+      axios.get('http://localhost:3001/v1/work/doing/'+memNo)
+        .then(res => {
+          const result = res.data.data
+          console.log(result, 'getWorkFl')
+          if(result.length > 0) {
+            this.doing = true
+          } else {
+            this.doing = false
+          }
+        })
     }
   },
   mounted() {
     this.getScmContract()
-    this.getScmGroupInfo()
+    this.getWorkFl()
   }
 
 }

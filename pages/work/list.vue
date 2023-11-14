@@ -30,7 +30,7 @@
               <h2>{{ item.companyNm }}</h2>
               <div class="attendanceWrap">
                 <div class="attendanceDate">
-                  <p class="mb-0">예상 수입금액 {{ expectedPrice }}원</p>
+                  <p class="mb-0">예상 수입금액 {{ calculateExpectedPrice(item) }}원</p>
                   <p>{{ item.regDt }}
                     <span v-if="item.authFl == 'n'">검수대기</span>
                     <span v-if="item.authFl == 'y'">검수완료</span>
@@ -105,11 +105,13 @@ export default {
     totalQuantity() {
       return 10
     },
-    expectedPrice () {
-      return 0
-    }
   },
   methods: {
+    calculateExpectedPrice (item) {
+      const data = JSON.parse(item.unitList)
+
+      return 0
+    },
     modifyWork(val) {
       const params = new URLSearchParams()
       params.append('eventNo', val)
