@@ -12,6 +12,6 @@
   cursor: pointer;
 }
 
-.text-white {
-  color: #FFFFFF;
+.text--white {
+  color: #FFFFFF !important;
 }

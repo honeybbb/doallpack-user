@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="12">
+  <div class="col-md-12">
     <v-card
       v-if="workArea.length > 0"
       v-for="item in workArea"
@@ -7,65 +7,76 @@
       style="border-radius: 10px"
       class="mb-2"
     >
-      <v-card-text class="cardList">
-      <h2>{{ item.groupNm }}</h2>
-      <div class="attendanceWrap">
+      <div v-if="!doing">
+        <v-card-text class="cardList">
+          <h2>{{ item.groupNm }}</h2>
+          <div class="attendanceWrap">
 
-        <div class="attendanceDate">
-          <p class="mb-0">{{ new Date().toISOString().substr(0, 10) }}</p>
-          <p>작업 장소를 선택해주세요.</p>
+            <div class="attendanceDate">
+              <p class="mb-0">{{ new Date().toISOString().substr(0, 10) }}</p>
+              <p>작업 장소를 선택해주세요.</p>
+            </div>
 
-        </div>
+            <v-btn
+              class="startWork"
+              color="#c84726"
+              height="42"
+              block
+              depressed
+              @click="startWork(item.sno)"
+            >
+              <span>작업시작</span>
+            </v-btn>
+          </div>
 
-        <v-btn
-          v-if="!doing"
-          class="startWork"
-          color="#c84726"
-          height="42"
-          block
-          depressed
-          @click="startWork(item.sno)"
-        >
-          <span>작업시작</span>
-        </v-btn>
-
-        <v-btn
-          v-else
-          class="endWork"
-          color="#39a759"
-          height="42"
-          block
-          depressed
-          @click="endWork(item.sno)"
-        >
-          <span>작업종료</span>
-        </v-btn>
-
-        <div class="attendanceInfo">
-          <ul style="list-style: none; display: flex; justify-content: space-between;">
-            <li>출근</li>
-            <li>03:59 PM</li>
-          </ul>
-        </div>
-
-        <div
-          class="
-          d-none
-          attendanceWrite
-          cursor-pointer"
-          @click="dialog=true"
-        >
-          <v-icon
-            small
-            color="#177ee3"
-          >
-            mdi-pencil-circle-outline
-          </v-icon>
-          작업일지작성
-        </div>
+        </v-card-text>
       </div>
+      <div v-else>
+        <v-card-text class="cardList">
+          <h2>{{ item.groupNm }}</h2>
+          <div class="attendanceWrap">
 
-      </v-card-text>
+            <div class="attendanceDate">
+              <p class="mb-0">{{ new Date().toISOString().substr(0, 10) }}</p>
+              <p>작업 장소를 선택해주세요.</p>
+            </div>
+            <v-btn
+              class="endWork"
+              color="#39a759"
+              height="42"
+              block
+              depressed
+              @click="endWork(item.sno)"
+            >
+              <span>작업종료</span>
+            </v-btn>
+          <div class="attendanceInfo">
+              <ul
+                class="pl-0"
+                style="
+                  list-style: none;
+                  display: flex;
+                  justify-content: space-between;"
+              >
+                <li>출근</li>
+                <li>{{ doing.workStartDt }}</li>
+              </ul>
+            </div>
+            <div
+              class="attendanceWrite cursor-pointer"
+              @click="getScmContractByScm(item.sno)"
+            >
+              <v-icon
+                small
+                color="#177ee3"
+              >
+                mdi-pencil-circle-outline
+              </v-icon>
+              작업일지작성
+            </div>
+          </div>
+        </v-card-text>
+      </div>
     </v-card>
     <v-card
       v-else
@@ -90,39 +101,68 @@
       </v-card-text>
     </v-card>
 
-    <v-dialog width="460" v-model="dialog" fullscreen>
+    <v-dialog
+      width="460"
+      v-model="dialog"
+      fullscreen
+    >
       <v-card color="#f6f6f6">
         <div class="col-md-12">
-        <div class="popup_head">
-          <v-card-title>작업일지작성</v-card-title>
-          <v-icon @click="dialog=false">mdi-close</v-icon>
-        </div>
-        <div class="popup_container">
-          <v-col cols="12" class="workStep">
-            <v-list>
-              <template v-for="list in contracts">
-              <v-list-group
-                :value="true"
-                class="workStep"
-                v-for="item in list.unitList"
-              >
-                <v-list-item v-if="item.useFl == 'y'">{{item}}</v-list-item>
-              </v-list-group>
-              </template>
-            </v-list>
-            <v-btn
-              depressed
-              block
-              height="42"
-              id="workSubmit"
-            >등록하기</v-btn>
-          </v-col>
+          <div class="popup_head">
+            <h2>작업일지작성</h2>
+            <v-icon @click="dialog=false">mdi-close</v-icon>
+          </div>
+          <div class="popup_container">
+            <ul class="workStep pl-0">
+              <li class="step step1" style="list-style: none;">
+                <h3><span>업체선택</span></h3>
+                <div
+                  class="workStepResult col-md-12"
+                  v-for="group in companyList"
+                  :key="group.sno"
+                >
+                  <dl v-for="company in JSON.parse(group.scmGroupList)"
+                      :key="company.scmNo">
+                    <dd @click="getScmContract(company.scmNo)">{{company.companyNm}}</dd>
+                  </dl>
+                </div>
+              </li>
+              <li class="step step2" style="list-style: none;">
+                <h3><span>항목선택</span></h3>
+                <div class="workStepResult">
+                  <dl
+                    v-for="item in contracts" :key="item.sno"
+                    class="unitList"
+                    style="list-style: none;">
+                    <div v-for="(n, index) in item.unitList" :key="index" :data-unitCode="index">
+                      <div v-if="n.useFl == 'y'">
+                        <input type="number" :id="'unitCnt_'+index" v-model="n.unitCnt"/>
+                        <v-btn depressed small height="42" @click="incrementValue(n, index, 1)">+1</v-btn>
+                        <v-btn depressed small height="42" @click="incrementValue(n, index, 5)">+5</v-btn>
+                        <v-btn depressed small height="42" @click="incrementValue(n, index, 10)">+10</v-btn>
+                        <v-btn depressed small height="42" @click="incrementValue(n, index, 100)">+100</v-btn>
+                      </div>
+                    </div>
+                  </dl>
+                </div>
+              </li>
+            </ul>
 
+              <v-btn
+                depressed
+                block
+                height="42"
+                id="workSubmit"
+                @click="workSubmit"
+              >
+                등록하기
+              </v-btn>
+
+          </div>
         </div>
-      </div>
       </v-card>
     </v-dialog>
-  </v-col>
+  </div>
 </template>
 <script>
 import axios from "axios";
@@ -134,8 +174,12 @@ export default {
   data() {
     return {
       dialog: false,
-      doing: false,
+      doing: [],
       contracts: [],
+      companyList: [],
+      units: [],
+      groupNo: '',
+      scmNo: '',
     }
   },
   methods: {
@@ -150,12 +194,13 @@ export default {
         .then(res => {
           console.log(res)
           this.getWorkFl()
+          alert('[출근]처리가 완료되었습니다.')
         })
 
 
-      alert('[출근]처리가 완료되었습니다.')
-      const diary = document.getElementsByClassName('attendanceWrite')[0]
-      diary.className = 'attendanceWrite cursor-pointer'
+
+      //const diary = document.getElementsByClassName('attendanceWrite')[0]
+      //diary.className = 'attendanceWrite cursor-pointer'
       //console.log(diary, 'd')
     },
     endWork (companySno) {
@@ -168,19 +213,51 @@ export default {
         .then(res => {
           console.log(res)
           this.getWorkFl()
+          alert('[퇴근]처리가 완료되었습니다.')
         })
 
-      alert('[퇴근]처리가 완료되었습니다.')
+
     },
-    async getScmContract() {
-      await axios.get('http://localhost:3001/v1/scm/contract')
+    incrementValue(unit, index, incrementValue) {
+      const input = document.getElementById('unitCnt_'+index)
+      const currentValue = Number(input.value);
+      if (isNaN(currentValue)) {
+        // input 값이 숫자가 아닌 경우 처리
+      } else {
+        input.value = currentValue + incrementValue;
+      }
+
+      //unit.unitCnt += incrementValue;
+    },
+    workSubmit() {
+      const memNo = localStorage.getItem('memNo'),
+        unitList = this.contracts.unitList,
+        companySno = this.groupNo,
+        scmNo = this.scmNo,
+        groupKey = companySno + '_' + scmNo;
+      const params = new URLSearchParams()
+      params.append('eventDt', new Date().toISOString().substr(0, 10))
+      params.append('unitList', unitList)
+      params.append('memNo', memNo)
+      params.append('companySno', companySno)
+      params.append('scmNo', scmNo)
+      params.append('groupKey', groupKey)
+
+      axios.post('http://localhost:3001/v1/work/list/write', params)
+        .then(res => {
+        console.log(res.data.data)
+      })
+
+    },
+    async getScmContract(scmNo) {
+      await axios.get('http://localhost:3001/v1/scm/contract/'+scmNo)
         .then(res => {
           //console.log(res.data.data)
           const result = res.data.data
 
           result.map((item) => {
             item.unitList = JSON.parse(item.unitList)
-            console.log(item.unitList)
+            //console.log(item.unitList)
           })
 
           this.contracts = result
@@ -191,19 +268,33 @@ export default {
       const memNo = localStorage.getItem('memNo')
       axios.get('http://localhost:3001/v1/work/doing/'+memNo)
         .then(res => {
-          const result = res.data.data
+          const result = res.data.data[0]
           console.log(result, 'getWorkFl')
-          if(result.length > 0) {
-            this.doing = true
-          } else {
-            this.doing = false
-          }
+          this.doing = result
         })
-    }
+    },
+    async getScmContractByScm(sno) {
+      await axios.get('http://localhost:3001/v1/scm/manage/group/list/info/'+sno)
+        .then(res => {
+          //console.log(res.data.data)
+          if(res.data.data.length > 0) {
+            this.companyList = res.data.data
+            this.dialog=true
+          }
+
+        })
+    },
+    getUnitCode() {
+      axios.get('http://localhost:3001/v1/code/unit/item')
+        .then(res => {
+          //console.log(res.data.data)
+          this.units = res.data.data
+        })
+    },
   },
   mounted() {
-    this.getScmContract()
     this.getWorkFl()
+    this.getUnitCode()
   }
 
 }
@@ -213,7 +304,7 @@ export default {
   display: block;
   position: relative;
   margin: 10px 0;
-  //padding-left: 10px;
+//padding-left: 10px;
 
   .v-btn span{
     font-weight: 900;
@@ -262,6 +353,47 @@ export default {
   margin-top: 30px;
   background: #c84726;
   border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
+  line-height: 42px;
+  font-weight: 900;
+  border: none;
+}
+
+.popup_container .workStepResult dl dd {
+  float: left;
+  width: calc(50% - 5px);
+  margin-right: 10px;
+  margin-bottom: 5px;
+  background: #fff;
+  text-align: center;
+  line-height: 40px;
+  border-radius: 4px;
+}
+
+.popup_container .workStepResult {
+  padding: 20px 20px 15px;
+  background: #ddd;
+  box-shadow: inset 0 8rem 10rem rgba(0, 0, 0, .15);
+  overflow-y: auto;
+}
+
+.popup_container .workStepResult input[type="number"] {
+  background-color: #FFFFFF;
+  padding-left: 10px;
+  max-width: 100px;
+  line-height: 40px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+.popup_work .popup_container .workStepResult #workSubmit {
+  margin: 0;
+  margin-top: 30px;
+  background: #c84726;
+  width: 100%;
+  border-radius: 4px;
   color: #fff;
   font-size: 14px;
   text-align: center;

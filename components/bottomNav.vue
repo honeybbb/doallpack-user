@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-bottom-navigation
+      grow
       height="65"
       background-color="#3f4850"
       align="center"
