@@ -31,7 +31,7 @@
               <div class="attendanceWrap">
                 <div class="attendanceDate">
                   <p class="mb-0">
-                    예상 수입금액 {{ calculateExpectedPrice(item.unitList) }}원
+                    예상 수입금액 {{ ExpectedPrice(JSON.parse(item.unitList)) }}원
                     {{ item.price }}
                   </p>
                   <p>{{ item.regDt }}
@@ -42,6 +42,7 @@
                     small
                     depressed
                     color="#177ee3"
+                    :disabled="item.authFl == 'y'"
                     @click="getMyWorkDetail(item.eventNo)"
                   >
                     수정하기
@@ -60,11 +61,11 @@
                 <template
                   class="detail-toggle"
                   v-for="n in JSON.parse(item.unitList)">
-                  <v-list-item v-if="n.useFl == 'y'">
+                  <v-list-item v-if="n.useFl == 'y' && n.unitCnt > 0">
                     <p>{{ n.unitNm }}</p>
                     <p>({{ n.unitCnt }}건)</p>
                     <v-spacer />
-                    <p>{{ n.price }}원</p>
+                    <p>{{ n.price * n.unitCnt }} 원</p>
                   </v-list-item>
                 </template>
 
@@ -154,24 +155,38 @@ export default {
   computed: {
     totalPrice: {
       get() {
-        return this.calculateExpectedPrice
+        return this.ExpectedPrice
       },
       set() {
 
       }
 
     },
-    totalQuantity() {
-      return 10
-    },
-    getScmContract() {
+    totalQuantity: {
+      get() {
+        //return this.totalQuantity
+      },
+      set() {
 
+      }
     },
   },
   methods: {
-    calculateExpectedPrice (price) {
+    ExpectedPrice (units) {
+      //let totalCostPrice = 0;
+      let totalPrice = 0;
 
-      return 0
+      for (let unit in units) {
+        if (units[unit].useFl === "y") {
+          //totalCostPrice += units[unit].totalCostPrice;
+          totalPrice += units[unit].totalPrice;
+        }
+      }
+
+      return totalPrice
+
+      //console.log(`Total Cost Price: ${totalCostPrice}`);
+      console.log(`Total Price: ${totalPrice}`);
     },
     incrementValue(unit, index, incrementValue) {
       const input = document.getElementById('unitCnt_'+index)
