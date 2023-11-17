@@ -223,7 +223,7 @@ export default {
       //params.append('eventDt', this.time3)
       axios.post('http://localhost:3001/v1/work/list', params)
         .then(res => {
-          //console.log(res.data.data)
+          console.log(res.data.data, 'getMyWorkList')
           let result = res.data.data
 
           this.workList = result
@@ -232,6 +232,7 @@ export default {
         })
     },
     getMyWorkDetail(eventNo) {
+      console.log(eventNo, 'eventNo')
       axios.get('http://localhost:3001/v1/work/list/details/'+eventNo)
         .then(res => {
           console.log(res.data.data[0],'getMyWorkDetail')

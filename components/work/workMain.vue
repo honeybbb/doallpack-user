@@ -101,6 +101,7 @@
       </v-card-text>
     </v-card>
 
+    <!-- 작업일지 dialog -->
     <v-dialog
       width="460"
       v-model="dialog"
@@ -121,7 +122,8 @@
                   v-for="group in companyList"
                   :key="group.sno"
                 >
-                  <dl v-for="company in JSON.parse(group.scmGroupList)"
+                  <dl
+                      v-for="company in JSON.parse(group.scmGroupList)"
                       :key="company.scmNo">
                     <dd @click="getScmContract(company.scmNo)">{{company.companyNm}}</dd>
                   </dl>
@@ -136,7 +138,10 @@
                     style="list-style: none;">
                     <div v-for="(n, index) in item.unitList" :key="index" :data-unitCode="index">
                       <div v-if="n.useFl == 'y'">
-                        <input type="number" :id="'unitCnt_'+index" v-model="n.unitCnt"/>
+                        <h4>{{ n }}</h4>
+                        <input type="number"
+                               :id="'unitCnt_'+index"
+                               v-model="n.unitCnt"/>
                         <v-btn depressed small height="42" @click="incrementValue(n, index, 1)">+1</v-btn>
                         <v-btn depressed small height="42" @click="incrementValue(n, index, 5)">+5</v-btn>
                         <v-btn depressed small height="42" @click="incrementValue(n, index, 10)">+10</v-btn>
@@ -180,6 +185,7 @@ export default {
       units: [],
       groupNo: '',
       scmNo: '',
+      workList: '',
     }
   },
   methods: {
@@ -225,28 +231,46 @@ export default {
         // input 값이 숫자가 아닌 경우 처리
       } else {
         input.value = currentValue + incrementValue;
+        unit['unitCnt'] =input.value
+        console.log(unit, '추가 수량')
       }
 
       //unit.unitCnt += incrementValue;
     },
-    workSubmit() {
-      const memNo = localStorage.getItem('memNo'),
-        unitList = this.contracts.unitList,
-        companySno = this.groupNo,
-        scmNo = this.scmNo,
-        groupKey = companySno + '_' + scmNo;
-      const params = new URLSearchParams()
-      params.append('eventDt', new Date().toISOString().substr(0, 10))
-      params.append('unitList', unitList)
-      params.append('memNo', memNo)
-      params.append('companySno', companySno)
-      params.append('scmNo', scmNo)
-      params.append('groupKey', groupKey)
+    async workSubmit() {
+        const result = confirm('입력 후에는 수정 및 추가입력이 불가능합니다. 입력하시겠습니까?')
 
-      axios.post('http://localhost:3001/v1/work/list/write', params)
-        .then(res => {
-        console.log(res.data.data)
-      })
+        if(result) {
+            const temp = this.contracts
+            const ChangeUnitList = []
+            temp.forEach((item, index) => {
+                ChangeUnitList.push(item.unitList)
+            })
+
+            const memNo = localStorage.getItem('memNo'),
+                unitList = ChangeUnitList,
+                companySno = this.groupNo,
+                scmNo = this.scmNo,
+                groupKey = companySno + '_' + scmNo;
+
+            const params = new URLSearchParams()
+            params.append('eventDt', new Date().toISOString().substr(0, 10))
+            params.append('unitList', JSON.stringify(unitList))
+            params.append('memNo', memNo)
+            params.append('companySno', companySno)
+            params.append('scmNo', scmNo)
+            params.append('groupKey', groupKey)
+
+            await axios.post('http://localhost:3001/v1/work/list/write', params)
+                .then(res => {
+                    let result = res.data.data
+                    if(result.insertId) {
+                        alert('정상적으로 등록되었습니다.')
+                        this.dialog = false
+                    }
+                })
+        }
+
 
     },
     async getScmContract(scmNo) {
@@ -274,9 +298,10 @@ export default {
         })
     },
     async getScmContractByScm(sno) {
+      console.log(sno, 'sno')
       await axios.get('http://localhost:3001/v1/scm/manage/group/list/info/'+sno)
         .then(res => {
-          //console.log(res.data.data)
+          console.log(res.data.data)
           if(res.data.data.length > 0) {
             this.companyList = res.data.data
             this.dialog=true
