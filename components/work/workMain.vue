@@ -138,7 +138,7 @@
                     style="list-style: none;">
                     <div v-for="(n, index) in item.unitList" :key="index" :data-unitCode="index">
                       <div v-if="n.useFl == 'y'">
-                        <h4>{{ n }}</h4>
+                        <h4>{{ index }}</h4>
                         <input type="number"
                                :id="'unitCnt_'+index"
                                v-model="n.unitCnt"/>
@@ -241,17 +241,32 @@ export default {
         const result = confirm('입력 후에는 수정 및 추가입력이 불가능합니다. 입력하시겠습니까?')
 
         if(result) {
-            const temp = this.contracts
-            const ChangeUnitList = []
-            temp.forEach((item, index) => {
-                ChangeUnitList.push(item.unitList)
-            })
+            const ChangeUnitList = this.contracts[0].unitList
 
-            const memNo = localStorage.getItem('memNo'),
-                unitList = ChangeUnitList,
-                companySno = this.groupNo,
-                scmNo = this.scmNo,
-                groupKey = companySno + '_' + scmNo;
+            let memNo = localStorage.getItem('memNo'),
+                  unitList = ChangeUnitList,
+                  companySno = this.groupNo,
+                  scmNo = this.scmNo,
+                  groupKey = companySno + '_' + scmNo,
+                  costPrice = 0,
+                  price = 0,
+                  qnt = 0;
+
+            const arr = Object.values(unitList)
+            arr.forEach((a, index) => {
+              //console.log(a, '현재 순회 중인 항목 확인');
+
+              if(a.useFl == 'y'){
+                if(!a.unitCnt) {
+                  a.unitCnt = 0
+                }
+                  console.log(a.unitCnt, a.costPrice, a.price, '더해질 값들 확인');
+                  qnt += parseFloat(a.unitCnt)
+                  costPrice += parseFloat(a.costPrice)
+                  price += parseFloat(a.price)
+              }
+
+            })
 
             const params = new URLSearchParams()
             params.append('eventDt', new Date().toISOString().substr(0, 10))
@@ -260,6 +275,9 @@ export default {
             params.append('companySno', companySno)
             params.append('scmNo', scmNo)
             params.append('groupKey', groupKey)
+            params.append('costPrice', costPrice)
+            params.append('price', price)
+            params.append('quantity', qnt)
 
             await axios.post('http://localhost:3001/v1/work/list/write', params)
                 .then(res => {
@@ -285,6 +303,7 @@ export default {
           })
 
           this.contracts = result
+          this.scmNo = scmNo
 
         })
     },
@@ -298,7 +317,9 @@ export default {
         })
     },
     async getScmContractByScm(sno) {
+        //계약항목 불러오기
       console.log(sno, 'sno')
+        this.groupNo = sno
       await axios.get('http://localhost:3001/v1/scm/manage/group/list/info/'+sno)
         .then(res => {
           console.log(res.data.data)
@@ -312,7 +333,7 @@ export default {
     getUnitCode() {
       axios.get('http://localhost:3001/v1/code/unit/item')
         .then(res => {
-          //console.log(res.data.data)
+          console.log(res.data.data)
           this.units = res.data.data
         })
     },
@@ -388,7 +409,7 @@ export default {
 
 .popup_container .workStepResult dl dd {
   float: left;
-  width: calc(50% - 5px);
+  width: calc(50% - 10px);
   margin-right: 10px;
   margin-bottom: 5px;
   background: #fff;

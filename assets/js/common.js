@@ -105,6 +105,22 @@ exports.get6Monthday = function() {
   return s;
 }
 
+exports.getFirstDayOfMonth = function() {
+	let d = new Date();
+
+	const year = d.getFullYear(); // 년
+	const month = d.getMonth();   // 월
+
+	// 이번달 첫날
+	let s =
+		this.leadingZeros(year, 4) + '-' +
+		this.leadingZeros(month + 1, 2) + '-01 00:00:00';
+
+	console.log(s, 's')
+
+	return s;
+}
+
 exports.getYearday = function () {
   let d = new Date();
 
@@ -161,4 +177,8 @@ exports.set3MonthDate = function() {
 
 exports.set6MonthDate = function () {
   return [this.get6Monthday(), this.getTimeStampEnd()]
+}
+
+exports.setThisMonthDate = function () {
+	return [this.getFirstDayOfMonth(), this.getTimeStamp()]
 }

@@ -6,6 +6,7 @@
       background-color="#3f4850"
       align="center"
       fixed
+      app
     >
       <div class="w-460" style="align-self: center;">
         <div class="bottom-wrap" >
