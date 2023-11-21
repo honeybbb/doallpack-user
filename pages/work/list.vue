@@ -31,7 +31,7 @@
               <h2>{{ item.groupNm }}] {{ item.companyNm }}</h2>
               <div class="attendanceWrap">
                 <div class="attendanceDate">
-                  <p class="mb-0">예상 수입금액 {{ item.price | comma }}원</p>
+                  <p class="mb-0">예상 수입금액 {{ item.totalPrice }}원</p>
                   <p>{{ item.regDt }}
                     <span v-if="item.authFl == 'n'">검수대기</span>
                     <span v-if="item.authFl == 'y'">검수완료</span>

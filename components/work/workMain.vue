@@ -140,12 +140,16 @@
                          :key="index"
                          :data-unitCode="index"
                          :data-itemNm="getItemNm(index)|splitName"
+                         :data-costPrice="n.costPrice"
+                         :data-price="n.price"
                     >
                       <div v-if="n.useFl == 'y'">
                         <h4>{{ getItemNm(index) | splitName }}</h4>
                         <input type="number"
                                :id="'unitCnt_'+index"
                                :data-itemNm="getItemNm(index)|splitName"
+                               :data-costPrice="n.costPrice"
+                               :data-price="n.price"
                                v-model="n.unitCnt"/>
                         <v-btn depressed small height="42" @click="incrementValue(n, index, 1)">+1</v-btn>
                         <v-btn depressed small height="42" @click="incrementValue(n, index, 5)">+5</v-btn>
@@ -247,6 +251,8 @@ export default {
         input.value = currentValue + incrementValue;
         unit['unitCnt'] =input.value
         unit['unitNm']=input.dataset.itemnm
+        unit['totalCostPrice']= input.value * parseInt(input.dataset.costprice)
+        unit['totalPrice']= input.value * parseInt(input.dataset.price)
         console.log(unit, '추가 수량')
       }
 
@@ -280,6 +286,8 @@ export default {
                   costPrice += parseFloat(a.costPrice)
                   price += parseFloat(a.price)
               }
+
+              console.log(qnt, costPrice, price)
 
             })
 
