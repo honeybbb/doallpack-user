@@ -136,11 +136,16 @@
                     v-for="item in contracts" :key="item.sno"
                     class="unitList"
                     style="list-style: none;">
-                    <div v-for="(n, index) in item.unitList" :key="index" :data-unitCode="index">
+                    <div v-for="(n, index) in item.unitList"
+                         :key="index"
+                         :data-unitCode="index"
+                         :data-itemNm="getItemNm(index)|splitName"
+                    >
                       <div v-if="n.useFl == 'y'">
-                        <h4>{{ index }}</h4>
+                        <h4>{{ getItemNm(index) | splitName }}</h4>
                         <input type="number"
                                :id="'unitCnt_'+index"
+                               :data-itemNm="getItemNm(index)|splitName"
                                v-model="n.unitCnt"/>
                         <v-btn depressed small height="42" @click="incrementValue(n, index, 1)">+1</v-btn>
                         <v-btn depressed small height="42" @click="incrementValue(n, index, 5)">+5</v-btn>
@@ -188,7 +193,16 @@ export default {
       workList: '',
     }
   },
+  filters: {
+    splitName(val) {
+      return val.split('^')[0].replace('^\^y','')
+    },
+  },
   methods: {
+    getItemNm(index) {
+      const found = this.units.find((a) => a.itemCd == index);
+      return found ? found.itemNm : null;
+    },
     startWork (companySno) {
       //const memNo = this.$store.state.memNo
       const memNo = localStorage.getItem('memNo')
@@ -232,6 +246,7 @@ export default {
       } else {
         input.value = currentValue + incrementValue;
         unit['unitCnt'] =input.value
+        unit['unitNm']=input.dataset.itemnm
         console.log(unit, '추가 수량')
       }
 
