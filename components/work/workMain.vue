@@ -274,7 +274,7 @@ export default {
                   qnt = 0;
 
             const arr = Object.values(unitList)
-            arr.forEach((a, index) => {
+            arr.map((a, index) => {
               //console.log(a, '현재 순회 중인 항목 확인');
 
               if(a.useFl == 'y'){
