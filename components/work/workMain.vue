@@ -291,6 +291,8 @@ export default {
 
             })
 
+          console.log(arr, 'arr')
+
             const params = new URLSearchParams()
             params.append('eventDt', new Date().toISOString().substr(0, 10))
             params.append('unitList', JSON.stringify(unitList))
