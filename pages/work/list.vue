@@ -184,6 +184,8 @@ export default {
       const currentValue = Number(input.value);
       if (isNaN(currentValue)) {
         // input 값이 숫자가 아닌 경우 처리
+        alert("숫자를 입력해주세요.");
+        return;
       } else {
         this.$set(this.unitList[index], 'unitCnt', currentValue + incrementValue);
         //input.value = currentValue + incrementValue;

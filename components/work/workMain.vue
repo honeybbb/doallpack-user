@@ -150,7 +150,10 @@
                                :data-itemNm="getItemNm(index)|splitName"
                                :data-costPrice="n.costPrice"
                                :data-price="n.price"
-                               v-model="n.unitCnt"/>
+                               v-model="n.unitCnt"
+                               @change="incrementValue(n, index, 0)"
+                               @blur="incrementValue(n, index, 0)"
+                        />
                         <v-btn depressed small height="42" @click="incrementValue(n, index, 1)">+1</v-btn>
                         <v-btn depressed small height="42" @click="incrementValue(n, index, 5)">+5</v-btn>
                         <v-btn depressed small height="42" @click="incrementValue(n, index, 10)">+10</v-btn>
@@ -247,16 +250,19 @@ export default {
       const currentValue = Number(input.value);
       if (isNaN(currentValue)) {
         // input 값이 숫자가 아닌 경우 처리
+        alert("숫자를 입력해주세요.");
+        return;
       } else {
         input.value = currentValue + incrementValue;
         unit['unitCnt'] =input.value
-        unit['unitNm']=input.dataset.itemnm
-        unit['totalCostPrice']= input.value * parseInt(input.dataset.costprice)
-        unit['totalPrice']= input.value * parseInt(input.dataset.price)
+        unit['unitNm']= input.dataset.itemnm
+        unit['totalCostPrice']= input.value * parseFloat(input.dataset.costprice)
+        unit['totalPrice']= input.value * parseFloat(input.dataset.price)
         console.log(unit, '추가 수량')
       }
 
-      //unit.unitCnt += incrementValue;
+      // 이 부분에서 this.$set을 사용하여 unitList를 업데이트합니다.
+      this.$set(this.contracts[0].unitList, index, unit);
     },
     async workSubmit() {
         const result = confirm('입력 후에는 수정 및 추가입력이 불가능합니다. 입력하시겠습니까?')
@@ -281,10 +287,15 @@ export default {
                 if(!a.unitCnt) {
                   a.unitCnt = 0
                 }
-                  console.log(a.unitCnt, a.costPrice, a.price, '더해질 값들 확인');
+
+                if(a.unitNm) {
+                  console.log(a.unitNm, a.unitCnt, a.costPrice, a.price, a, '더해질 값들 확인');
                   qnt += parseFloat(a.unitCnt)
-                  costPrice += parseFloat(a.costPrice)
-                  price += parseFloat(a.price)
+                  costPrice += parseFloat(a.costPrice * a.unitCnt)
+                  price += parseFloat(a.price * a.unitCnt)
+                }
+
+
               }
 
               console.log(qnt, costPrice, price)
@@ -355,8 +366,8 @@ export default {
 
         })
     },
-    getUnitCode() {
-      axios.get('http://localhost:3001/v1/code/unit/item')
+    async getUnitCode() {
+      await axios.get('http://localhost:3001/v1/code/unit/item')
         .then(res => {
           console.log(res.data.data)
           this.units = res.data.data
