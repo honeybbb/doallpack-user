@@ -45,11 +45,9 @@ export default {
         });
     },
     async getMyWorkGroup(val) {
-
       const params = {
         val: val
       }
-
       await axios.get('http://localhost:3001/v1/member/work/group', { params })
         .then(res => {
           console.log(res.data.data)

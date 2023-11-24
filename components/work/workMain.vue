@@ -281,7 +281,6 @@ export default {
 
             const arr = Object.values(unitList)
             arr.map((a, index) => {
-              //console.log(a, '현재 순회 중인 항목 확인');
 
               if(a.useFl == 'y'){
                 if(!a.unitCnt) {
@@ -294,15 +293,11 @@ export default {
                   costPrice += parseFloat(a.costPrice * a.unitCnt)
                   price += parseFloat(a.price * a.unitCnt)
                 }
-
-
               }
-
-              console.log(qnt, costPrice, price)
-
+              //qnt = qnt.toFixed(3) // 소수점 셋째자리에서 반올림
+              //costPrice = costPrice.toFixed(3) // 소수점 셋째자리에서 반올림,
+              //price = price.toFixed(3) // 소수점 셋째자리에서 반올림
             })
-
-          console.log(arr, 'arr')
 
             const params = new URLSearchParams()
             params.append('eventDt', new Date().toISOString().substr(0, 10))

@@ -63,7 +63,7 @@
                     <p>{{ n.unitNm }}</p>
                     <p>({{ n.unitCnt }}건)</p>
                     <v-spacer />
-                    <p>{{ Math.round(n.price * n.unitCnt) | comma }} 원</p>
+                    <p>{{ n.totalPrice | comma }} 원</p>
                   </v-list-item>
                 </template>
 
