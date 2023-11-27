@@ -72,6 +72,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -103,6 +105,18 @@ export default {
         return
       }
 
+      await axios
+        .post('http://api.doall.renewwave.co.kr/v1/member/auth', saveData)
+        .then(res => {
+          if(res.data.result) {
+            localStorage.setItem('memNo', res.data.data[0].memNo)
+            this.$router.push('/')
+          } else {
+            alert('아이디 또는 패스워드를 확인해주세요.')
+            return;
+          }
+        })
+      /*
       await this.$store.dispatch('loginUser', saveData)
         .then(res => {
           if(this.$store.state.memNo) {
@@ -119,8 +133,10 @@ export default {
           alert('아이디 또는 패스워드를 확인해주세요.')
           return
         })
+
+       */
     }
-  },
+  }
 };
 </script>
 

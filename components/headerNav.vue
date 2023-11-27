@@ -77,6 +77,7 @@ export default {
   },
   methods: {
     logOutUser() {
+      localStorage.removeItem('memNo')
       this.$router.push('/login')
     }
   }
