@@ -125,7 +125,12 @@
                   <dl
                       v-for="company in JSON.parse(group.scmGroupList)"
                       :key="company.scmNo">
-                    <dd @click="getScmContract(company.scmNo)">{{company.companyNm}}</dd>
+                    <dd
+                      :class="selected == company.scmNo ?'selected':''"
+                      @click="getScmContract(company.scmNo)"
+                    >
+                      {{company.companyNm}}
+                    </dd>
                   </dl>
                 </div>
               </li>
@@ -198,6 +203,7 @@ export default {
       groupNo: '',
       scmNo: '',
       workList: '',
+      selected: [],
     }
   },
   filters: {
@@ -323,6 +329,7 @@ export default {
 
     },
     async getScmContract(scmNo) {
+      this.selected = scmNo
       await axios.get('http://api.doall.renewwave.co.kr/v1/scm/contract/'+scmNo)
         .then(res => {
           //console.log(res.data.data)
@@ -488,5 +495,10 @@ export default {
   line-height: 42px;
   font-weight: 900;
   border: none;
+}
+
+.selected {
+  background-color: #c84726 !important;
+  color: #FFFFFF;
 }
 </style>
