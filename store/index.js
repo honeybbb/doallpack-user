@@ -29,9 +29,14 @@ const store = () => new Vuex.Store({
     loginUser({commit}, data) {// dispatch 로 부를 수 있다.
       axios.post('http://api.doall.renewwave.co.kr/v1/member/auth', data)
         .then(res => {
-          console.log(res.data.data)
-          commit('SET_USER', res.data.data[0])
-          localStorage.setItem('memNo', res.data.data[0].memNo)
+          if(res.data.result) {
+            commit('SET_USER', res.data.data[0])
+            localStorage.setItem('memNo', res.data.data[0].memNo)
+          } else {
+            alert('아이디 또는 패스워드를 확인해주세요.')
+            return
+          }
+
         }).catch(err => {
           console.log(err, 'err')
           alert('아이디 또는 패스워드를 확인해주세요.')
