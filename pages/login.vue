@@ -108,6 +108,10 @@ export default {
           if(this.$store.state.memNo) {
             // 로그인 성공시 수행할 로직 작성
             this.$router.push('/')
+          } else {
+            console.log(err, 'err')
+            alert('아이디 또는 패스워드를 확인해주세요.')
+            return
           }
 
         }).catch(err => {
