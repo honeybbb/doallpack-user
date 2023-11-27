@@ -330,7 +330,18 @@ export default {
 
           result.map((item) => {
             item.unitList = JSON.parse(item.unitList)
-            //console.log(item.unitList)
+
+            for (let unit in item.unitList) {
+              // Add totalCostPrice and totalPrice with initial value of 0
+              item.unitList[unit] = {
+                ...item.unitList[unit],
+                unitNm: this.$options.filters.splitName(this.getItemNm(unit)),
+                totalCostPrice: 0,
+                totalPrice: 0,
+              };
+            }
+
+            console.log(JSON.stringify(item.unitList))
           })
 
           this.contracts = result
@@ -353,7 +364,7 @@ export default {
         this.groupNo = sno
       await axios.get('http://localhost:3001/v1/scm/manage/group/list/info/'+sno)
         .then(res => {
-          console.log(res.data.data)
+          console.log(res.data.data, 'getScmContract')
           if(res.data.data.length > 0) {
             this.companyList = res.data.data
             this.dialog=true

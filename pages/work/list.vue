@@ -103,9 +103,17 @@
                     class="unitList"
                     style="list-style: none;">
                     <div v-for="(n, index) in unitList" :key="index" :data-unitCode="index">
-                      {{n.unitNm}}
                       <div v-if="n.useFl == 'y'">
-                        <input type="number" :id="'unitCnt_'+index" v-model="n.unitCnt"/>
+                        <h4>{{n.unitNm}}</h4>
+                        <input type="number"
+                               :id="'unitCnt_'+index"
+                               :data-itemNm="getItemNm(index)|splitName"
+                               :data-costPrice="n.costPrice"
+                               :data-price="n.price"
+                               v-model="n.unitCnt"
+                               @change="incrementValue(n, index, 0)"
+                               @blur="incrementValue(n, index, 0)"
+                        />
                         <v-btn depressed small height="42" @click="incrementValue(n, index, 1)">+1</v-btn>
                         <v-btn depressed small height="42" @click="incrementValue(n, index, 5)">+5</v-btn>
                         <v-btn depressed small height="42" @click="incrementValue(n, index, 10)">+10</v-btn>
@@ -148,6 +156,9 @@ export default {
     comma(val) {
       return String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
+    splitName(val) {
+      return val.split('^')[0].replace('^\^y','')
+    },
   },
   data() {
     return {
@@ -167,6 +178,7 @@ export default {
       pageSize: 5,
       page: 1,
       eventNo: '',
+      units: [],
     }
   },
   computed: {
@@ -179,6 +191,17 @@ export default {
     }
   },
   methods: {
+    async getUnitCode() {
+      await axios.get('http://localhost:3001/v1/code/unit/item')
+        .then(res => {
+          console.log(res.data.data)
+          this.units = res.data.data
+        })
+    },
+    getItemNm(index) {
+      const found = this.units.find((a) => a.itemCd == index);
+      return found ? found.itemNm : null;
+    },
     incrementValue(unit, index, incrementValue) {
       const input = document.getElementById('unitCnt_'+index)
       const currentValue = Number(input.value);
@@ -188,10 +211,14 @@ export default {
         return;
       } else {
         this.$set(this.unitList[index], 'unitCnt', currentValue + incrementValue);
-        //input.value = currentValue + incrementValue;
+        this.$set(this.unitList[index], 'unitNm', input.dataset.itemnm);
+        this.$set(this.unitList[index], 'totalCostPrice', (currentValue + incrementValue) * parseFloat(input.dataset.costprice));
+        this.$set(this.unitList[index], 'totalPrice', (currentValue + incrementValue) * parseFloat(input.dataset.price));
+
       }
     },
     async ModifyWork() {
+      //console.log(this.unitList)
       const params = new URLSearchParams()
       params.append('eventNo', this.eventNo)
       params.append('unitList', JSON.stringify(this.unitList))
@@ -247,8 +274,8 @@ export default {
           });
 
           // totalPrice와 totalQuantity 저장
-          this.totalPrice = totalPrice;
-          this.totalQuantity = totalQuantity;
+          this.totalPrice = totalPrice.toFixed(2);
+          this.totalQuantity = totalQuantity.toFixed(2);
 
         })
     },
@@ -278,6 +305,7 @@ export default {
   mounted() {
     this.time3 = commonJS.setThisMonthDate()
     this.getMyWorkList()
+    this.getUnitCode()
   }
 }
 </script>
