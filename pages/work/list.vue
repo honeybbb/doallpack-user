@@ -192,7 +192,7 @@ export default {
   },
   methods: {
     async getUnitCode() {
-      await axios.get('http://localhost:3001/v1/code/unit/item')
+      await axios.get('http://api.doall.renewwave.co.kr/v1/code/unit/item')
         .then(res => {
           console.log(res.data.data)
           this.units = res.data.data
@@ -222,7 +222,7 @@ export default {
       const params = new URLSearchParams()
       params.append('eventNo', this.eventNo)
       params.append('unitList', JSON.stringify(this.unitList))
-      await axios.post('http://localhost:3001/v1/work/member/modify', params)
+      await axios.post('http://api.doall.renewwave.co.kr/v1/work/member/modify', params)
         .then(res => {
           console.log(res.data.data)
           this.getMyWorkList()
@@ -248,7 +248,7 @@ export default {
       params.append('sDate', sDate)
       params.append('eDate', eDate)
 
-      axios.post('http://localhost:3001/v1/work/list', params)
+      axios.post('http://api.doall.renewwave.co.kr/v1/work/list', params)
         .then(res => {
           console.log(res.data.data, 'getMyWorkList')
           let result = res.data.data
@@ -281,7 +281,7 @@ export default {
     },
     getMyWorkDetail(eventNo) {
       console.log(eventNo, 'eventNo')
-      axios.get('http://localhost:3001/v1/work/list/details/'+eventNo)
+      axios.get('http://api.doall.renewwave.co.kr/v1/work/list/details/'+eventNo)
         .then(res => {
           console.log(res.data.data[0],'getMyWorkDetail')
           let result = res.data.data[0]

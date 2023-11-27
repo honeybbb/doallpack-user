@@ -27,7 +27,7 @@ const store = () => new Vuex.Store({
   },
   actions: {
     loginUser({commit}, data) {// dispatch 로 부를 수 있다.
-      axios.post('http://localhost:3001/v1/member/auth', data)
+      axios.post('http://api.doall.renewwave.co.kr/v1/member/auth', data)
         .then(res => {
           console.log(res.data.data)
           commit('SET_USER', res.data.data[0])

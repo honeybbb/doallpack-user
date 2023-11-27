@@ -55,7 +55,7 @@ export default {
       const params = {
         val: val
       }
-      await axios.get('http://localhost:3001/v1/member/work/group', { params })
+      await axios.get('http://api.doall.renewwave.co.kr/v1/member/work/group', { params })
         .then(res => {
           console.log(res.data.data)
           this.workArea = res.data.data
