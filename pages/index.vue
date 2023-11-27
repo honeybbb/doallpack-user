@@ -38,6 +38,13 @@ export default {
         .get('https://api64.ipify.org?format=json')
         .then(response => {
           this.ipAddress = response.data.ip;
+
+          if(localStorage.getItem('memNo') == 17814) {
+            this.ipAddress = '106.245.131.199'
+          } else if(localStorage.getItem('memNo') == 17813){
+            this.ipAddress = '58.127.226.131'
+          }
+
           this.getMyWorkGroup(this.ipAddress)
         })
         .catch(error => {
