@@ -222,7 +222,7 @@ export default {
       const params = new URLSearchParams()
       params.append('eventNo', this.eventNo)
       params.append('unitList', JSON.stringify(this.unitList))
-      await axios.post('http://api.doall.renewwave.co.kr/v1/work/member/modify', params)
+      await axios.post('http://api.doall.renewwave.co.kr/v1/work/list/modify', params)
         .then(res => {
           console.log(res.data.data)
           this.getMyWorkList()
