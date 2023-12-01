@@ -3,21 +3,25 @@
     <v-layout row wrap>
       <v-flex class="pt-0">
         <div class="col-md-12 normal_board">
-          <h2>작업내역</h2>
-          <date-picker
-            class="mb-5"
-            v-model="time3"
-            valueType="format"
-            range
-            :lang="lang"
-          />
-          <v-btn
-            color="black"
-            depressed
-            @click="getMyWorkList"
-          >
-            <span class="text--white">검색</span>
-          </v-btn>
+          <h2>{{ memNm }}님 작업내역</h2>
+          <div class="d-flex">
+            <date-picker
+              class="mb-5"
+              v-model="time3"
+              valueType="format"
+              range
+              :lang="lang"
+            />
+            <v-spacer/>
+            <v-btn
+              color="black"
+              depressed
+              @click="getMyWorkList"
+            >
+              <span class="text--white">검색</span>
+            </v-btn>
+          </div>
+
 
           <h3>이번달 수익 : {{ totalPrice | comma }}원
             ({{ totalQuantity | comma }} 건)</h3>
@@ -179,6 +183,10 @@ export default {
       page: 1,
       eventNo: '',
       units: [],
+      newPrice: 0,
+      newCostPrice: 0,
+      quantity: 0,
+      memNm: '',
     }
   },
   computed: {
@@ -215,12 +223,68 @@ export default {
         this.$set(this.unitList[index], 'totalCostPrice', (currentValue + incrementValue) * parseFloat(input.dataset.costprice));
         this.$set(this.unitList[index], 'totalPrice', (currentValue + incrementValue) * parseFloat(input.dataset.price));
 
+        /*
+        this.workList.forEach((item) => {
+          if(item.eventNo == this.eventNo) {
+            let beforeEa = JSON.parse(item.unitList)[index].unitCnt
+            if(!beforeEa) {
+              beforeEa = 0
+            }
+            let afterEa = this.unitList[index].unitCnt
+
+            console.log(beforeEa, afterEa)
+
+            if(afterEa == 0) {
+              console.log('0으로 바꿀 때')
+              item.price -= this.unitList[index].totalPrice;
+              item.costPrice -= this.unitList[index].totalCostPrice;
+            } else if(beforeEa < afterEa) {
+              console.log('수량이 늘어났으면 +')
+              // 수량이 늘어났으면 +
+              item.price += this.unitList[index].totalPrice;
+              item.costPrice += this.unitList[index].totalCostPrice;
+            } else {
+              console.log('수량이 줄었으면 -')
+              // 수량이 줄었으면 -
+              item.price -= this.unitList[index].totalPrice;
+              item.costPrice -= this.unitList[index].totalCostPrice;
+            }
+            //item.price = this.unitList[index].totalPrice;
+            //item.costPrice = this.unitList[index].totalCostPrice;
+          }
+
+          this.newPrice = item.price
+          this.newCostPrice = item.costPrice
+
+          console.log(item.price, item.costPrice)
+
+        })
+
+         */
       }
     },
     async ModifyWork() {
+      this.quantity = 0
+      this.newPrice = 0
+      this.newCostPrice = 0
+      //가격초기화
+      let newUnitList = Object.values(this.unitList)
+      newUnitList.map((a) => {
+        if(a.useFl=='y'){
+          console.log(a)
+          this.quantity += parseFloat(a.unitCnt)
+          this.newPrice += parseFloat(a.price * a.unitCnt)
+          this.newCostPrice += parseFloat(a.costPrice * a.unitCnt)
+          console.log(this.newPrice, this.newCostPrice, this.quantity)
+        }
+
+      })
       //console.log(this.unitList)
       const params = new URLSearchParams()
       params.append('eventNo', this.eventNo)
+      params.append('costPrice', this.newCostPrice)
+      params.append('price', this.newPrice)
+      params.append('quantity', this.quantity)
       params.append('unitList', JSON.stringify(this.unitList))
       await axios.post('http://api.doall.renewwave.co.kr/v1/work/list/modify', params)
         .then(res => {
@@ -304,6 +368,7 @@ export default {
   },
   mounted() {
     this.time3 = commonJS.setThisMonthDate()
+    this.memNm = localStorage.getItem('memNm')
     this.getMyWorkList()
     this.getUnitCode()
   }

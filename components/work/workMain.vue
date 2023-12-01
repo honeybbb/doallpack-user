@@ -472,6 +472,11 @@ export default {
   background: #ddd;
   box-shadow: inset 0 8rem 10rem rgba(0, 0, 0, .15);
   overflow-y: auto;
+
+  @media (max-width: 391px) {
+    padding: 10px 10px 15px;
+
+  }
 }
 
 .popup_container .workStepResult input[type="number"] {
@@ -481,6 +486,11 @@ export default {
   line-height: 40px;
   border: 1px solid #ddd;
   box-sizing: border-box;
+
+  @media (max-width: 376px) {
+    max-width: 80px;
+
+  }
 }
 
 .popup_work .popup_container .workStepResult #workSubmit {
