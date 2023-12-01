@@ -110,6 +110,8 @@ export default {
         .then(res => {
           if(res.data.result) {
             localStorage.setItem('memNo', res.data.data[0].memNo)
+            localStorage.setItem('memNm', res.data.data[0].memNm)
+            localStorage.setItem('memId', res.data.data[0].memId)
             this.$router.push('/')
           } else {
             alert('아이디 또는 패스워드를 확인해주세요.')
