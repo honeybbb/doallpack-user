@@ -1,13 +1,14 @@
 <template>
   <div class="col-md-12">
-    <v-card
-      v-if="workArea.length > 0"
-      v-for="item in workArea"
-      outlined
-      style="border-radius: 10px"
-      class="mb-2"
-    >
+    <template v-if="workArea.length > 0">
+
       <div v-if="!doing">
+        <v-card
+          v-for="item in workArea"
+          outlined
+          style="border-radius: 10px"
+          class="mb-2"
+        >
         <v-card-text class="cardList">
           <h2>{{ item.groupNm }}</h2>
           <div class="attendanceWrap">
@@ -30,8 +31,16 @@
           </div>
 
         </v-card-text>
+        </v-card>
       </div>
       <div v-else>
+        <v-card
+          v-for="item in workArea"
+          v-if="doing.companySno == item.sno"
+          outlined
+          style="border-radius: 10px"
+          class="mb-2"
+        >
         <v-card-text class="cardList">
           <h2>{{ item.groupNm }}</h2>
           <div class="attendanceWrap">
@@ -76,30 +85,32 @@
             </div>
           </div>
         </v-card-text>
+        </v-card>
       </div>
-    </v-card>
-    <v-card
-      v-else
-      outlined
-      style="border-radius: 10px"
-      class="mb-2"
-    >
-      <v-card-text>
-        <div class="attendanceWrap">
-          <h2>근무지역이 확인되지 않습니다.</h2>
-          <div class="attendanceDate">
-            <p class="mb-0">{{ new Date().toISOString().substr(0, 10) }}</p>
-            <p class="description">근무지 wifi접속 후 새로고침 해주세요!</p>
+    </template>
+    <template v-else>
+      <v-card
+        outlined
+        style="border-radius: 10px"
+        class="mb-2"
+      >
+        <v-card-text>
+          <div class="attendanceWrap">
+            <h2>근무지역이 확인되지 않습니다.</h2>
+            <div class="attendanceDate">
+              <p class="mb-0">{{ new Date().toISOString().substr(0, 10) }}</p>
+              <p class="description">근무지 wifi접속 후 새로고침 해주세요!</p>
+            </div>
+            <v-btn
+              depressed
+              @click="location.reload();"
+            >
+              새로고침
+            </v-btn>
           </div>
-          <v-btn
-            depressed
-            @click="location.reload();"
-          >
-            새로고침
-          </v-btn>
-        </div>
-      </v-card-text>
-    </v-card>
+        </v-card-text>
+      </v-card>
+    </template>
 
     <!-- 작업일지 dialog -->
     <v-dialog
