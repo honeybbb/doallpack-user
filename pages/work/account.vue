@@ -6,12 +6,13 @@
           <h2>{{ memNm }}님 작업내역</h2>
           <div class="d-flex">
             <date-picker
-              class="mb-5"
-              v-model="time3"
               valueType="format"
               range
-              :lang="lang"
               type="month"
+              v-model="time3"
+              @change="handleDateChange"
+              :lang="lang"
+              class="mb-5"
             />
             <v-spacer/>
             <v-btn
@@ -71,6 +72,7 @@ import DatePicker from "vue2-datepicker";
 import 'vue2-datepicker/index.css';
 import commonJS from '/assets/js/common';
 import axios from "axios";
+import moment from 'moment';
 export default {
   components: {
     DatePicker
@@ -101,6 +103,21 @@ export default {
 
   },
   methods: {
+    handleDateChange(date){
+      if(date.length === 2) {
+        if (date.length === 2) {
+          const startOfMonth = this.getStartOfMonth(date[0]);
+          const endOfMonth = this.getEndOfMonth(date[1]);
+          this.time3 = [startOfMonth, endOfMonth];
+        }
+      }
+    },
+    getStartOfMonth(date) {
+      return moment(date).startOf('month').format('YYYY-MM-DD');
+    },
+    getEndOfMonth(date) {
+      return moment(date).endOf('month').format('YYYY-MM-DD');
+    },
     filteredSubRows(item) {
       return JSON.parse(item.unitList)
     },
