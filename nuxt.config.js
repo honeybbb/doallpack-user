@@ -1,7 +1,7 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'dollpack-user',
+    title: '두올팩',
     htmlAttrs: {
       lang: 'en',
     },
