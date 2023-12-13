@@ -282,7 +282,8 @@ export default {
       this.$set(this.contracts[0].unitList, index, unit);
     },
     async workSubmit() {
-        const result = confirm('입력 후에는 수정 및 추가입력이 불가능합니다. 입력하시겠습니까?')
+        // const result = confirm('입력 후에는 수정 및 추가입력이 불가능합니다. 입력하시겠습니까?')
+        const result = confirm('현재 수량으로 입력하시겠습니까?')
 
         if(result) {
             const ChangeUnitList = this.contracts[0].unitList
