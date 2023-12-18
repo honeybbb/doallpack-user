@@ -338,7 +338,7 @@ export default {
           });
 
           // totalPrice와 totalQuantity 저장
-          this.totalPrice = totalPrice.toFixed(2);
+          this.totalPrice = parseInt(totalPrice.toFixed(2), 10);
           this.totalQuantity = totalQuantity.toFixed(2);
 
         })
