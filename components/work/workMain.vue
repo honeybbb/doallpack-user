@@ -282,6 +282,7 @@ export default {
       this.$set(this.contracts[0].unitList, index, unit);
     },
     async workSubmit() {
+      let today = new Date();
         // const result = confirm('입력 후에는 수정 및 추가입력이 불가능합니다. 입력하시겠습니까?')
         const result = confirm('현재 수량으로 입력하시겠습니까?')
 
@@ -318,7 +319,7 @@ export default {
             })
 
             const params = new URLSearchParams()
-            params.append('eventDt', new Date().toISOString().substr(0, 10))
+            params.append('eventDt', this.getToday(today))
             params.append('unitList', JSON.stringify(unitList))
             params.append('memNo', memNo)
             params.append('companySno', companySno)
@@ -339,6 +340,13 @@ export default {
         }
 
 
+    },
+    getToday(date){
+      var year = date.getFullYear();
+      var month = ("0" + (1 + date.getMonth())).slice(-2);
+      var day = ("0" + date.getDate()).slice(-2);
+
+      return year + "/" + month + "/" + day;
     },
     async getScmContract(scmNo) {
       this.selected = scmNo
