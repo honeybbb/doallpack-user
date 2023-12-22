@@ -283,20 +283,41 @@ export default {
     },
     async workSubmit() {
       let today = new Date();
-        // const result = confirm('입력 후에는 수정 및 추가입력이 불가능합니다. 입력하시겠습니까?')
-        const result = confirm('현재 수량으로 입력하시겠습니까?')
+      let eventDt = this.getToday(today),
+          groupKey = this.groupNo + '_' + this.scmNo;
+      let isAuthFl = false
 
-        if(result) {
+      let params = new URLSearchParams()
+      params.append('eventDt', eventDt)
+      params.append('groupKey', groupKey)
+      await axios.post('http://api.doall.renewwave.co.kr/v1/work/total', params)
+        .then(async response => {
+          let res = response.data.data[0]
+          if(res) {
+            //console.log(res, 'res')
+            if(res.authFl == 'y') {
+              isAuthFl = true
+            }
+          }
+
+          if(isAuthFl) {
+            alert('오늘은 더이상 수량을 입력할 수 없습니다.')
+            return;
+          }
+          // const result = confirm('입력 후에는 수정 및 추가입력이 불가능합니다. 입력하시겠습니까?')
+          const result = confirm('현재 수량으로 입력하시겠습니까?')
+
+          if(result) {
             const ChangeUnitList = this.contracts[0].unitList
 
             let memNo = localStorage.getItem('memNo'),
-                  unitList = ChangeUnitList,
-                  companySno = this.groupNo,
-                  scmNo = this.scmNo,
-                  groupKey = companySno + '_' + scmNo,
-                  costPrice = 0,
-                  price = 0,
-                  qnt = 0;
+              unitList = ChangeUnitList,
+              companySno = this.groupNo,
+              scmNo = this.scmNo,
+              groupKey = companySno + '_' + scmNo,
+              costPrice = 0,
+              price = 0,
+              qnt = 0;
 
             const arr = Object.values(unitList)
             arr.map((a, index) => {
@@ -330,14 +351,17 @@ export default {
             params.append('quantity', qnt)
 
             await axios.post('http://api.doall.renewwave.co.kr/v1/work/list/write', params)
-                .then(res => {
-                    let result = res.data.data
-                    if(result.insertId) {
-                        alert('정상적으로 등록되었습니다.')
-                        this.dialog = false
-                    }
-                })
-        }
+              .then(res => {
+                let result = res.data.data
+                if(result.insertId) {
+                  alert('정상적으로 등록되었습니다.')
+                  this.dialog = false
+                }
+              })
+          }
+        })
+
+
 
 
     },
