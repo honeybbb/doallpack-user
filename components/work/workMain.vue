@@ -14,7 +14,7 @@
           <div class="attendanceWrap">
 
             <div class="attendanceDate">
-              <p class="mb-0">{{ new Date().toISOString().substr(0, 10) }}</p>
+              <p class="mb-0">{{ getToday(new Date()) }}</p>
               <p>작업 장소를 선택해주세요.</p>
             </div>
 
@@ -46,7 +46,7 @@
           <div class="attendanceWrap">
 
             <div class="attendanceDate">
-              <p class="mb-0">{{ new Date().toISOString().substr(0, 10) }}</p>
+              <p class="mb-0">{{ getToday(new Date()) }}</p>
               <p>작업 장소를 선택해주세요.</p>
             </div>
             <v-btn
