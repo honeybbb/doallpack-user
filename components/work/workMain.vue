@@ -234,7 +234,7 @@ export default {
       params.append('memNo', memNo)
       params.append('companySno', companySno)
 
-      axios.post('http://api.doall.renewwave.co.kr/v1/work/member/start', params)
+      axios.post('http://api.doallpack.shop/v1/work/member/start', params)
         .then(res => {
           console.log(res)
           this.getWorkFl()
@@ -253,7 +253,7 @@ export default {
       params.append('memNo', memNo)
       params.append('companySno', companySno)
 
-      axios.post('http://api.doall.renewwave.co.kr/v1/work/member/end', params)
+      axios.post('http://api.doallpack.shop/v1/work/member/end', params)
         .then(res => {
           console.log(res)
           this.getWorkFl()
@@ -290,7 +290,7 @@ export default {
       let params = new URLSearchParams()
       params.append('eventDt', eventDt)
       params.append('groupKey', groupKey)
-      await axios.post('http://api.doall.renewwave.co.kr/v1/work/total', params)
+      await axios.post('http://api.doallpack.shop/v1/work/total', params)
         .then(async response => {
           let res = response.data.data[0]
           if(res) {
@@ -350,7 +350,7 @@ export default {
             params.append('price', price)
             params.append('quantity', qnt)
 
-            await axios.post('http://api.doall.renewwave.co.kr/v1/work/list/write', params)
+            await axios.post('http://api.doallpack.shop/v1/work/list/write', params)
               .then(res => {
                 let result = res.data.data
                 if(result.insertId) {
@@ -374,7 +374,7 @@ export default {
     },
     async getScmContract(scmNo) {
       this.selected = scmNo
-      await axios.get('http://api.doall.renewwave.co.kr/v1/scm/contract/'+scmNo)
+      await axios.get('http://api.doallpack.shop/v1/scm/contract/'+scmNo)
         .then(res => {
           //console.log(res.data.data)
           const result = res.data.data
@@ -402,7 +402,7 @@ export default {
     },
     getWorkFl() {
       const memNo = localStorage.getItem('memNo')
-      axios.get('http://api.doall.renewwave.co.kr/v1/work/doing/'+memNo)
+      axios.get('http://api.doallpack.shop/v1/work/doing/'+memNo)
         .then(res => {
           const result = res.data.data[0]
           console.log(result, 'getWorkFl')
@@ -413,7 +413,7 @@ export default {
         //계약항목 불러오기
       console.log(sno, 'sno')
         this.groupNo = sno
-      await axios.get('http://api.doall.renewwave.co.kr/v1/scm/manage/group/list/info/'+sno)
+      await axios.get('http://api.doallpack.shop/v1/scm/manage/group/list/info/'+sno)
         .then(res => {
           console.log(res.data.data, 'getScmContract')
           if(res.data.data.length > 0) {
@@ -424,7 +424,7 @@ export default {
         })
     },
     async getUnitCode() {
-      await axios.get('http://api.doall.renewwave.co.kr/v1/code/unit/item')
+      await axios.get('http://api.doallpack.shop/v1/code/unit/item')
         .then(res => {
           console.log(res.data.data)
           this.units = res.data.data

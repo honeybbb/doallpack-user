@@ -200,7 +200,7 @@ export default {
   },
   methods: {
     async getUnitCode() {
-      await axios.get('http://api.doall.renewwave.co.kr/v1/code/unit/item')
+      await axios.get('http://api.doallpack.shop/v1/code/unit/item')
         .then(res => {
           console.log(res.data.data)
           this.units = res.data.data
@@ -286,7 +286,7 @@ export default {
       params.append('price', this.newPrice)
       params.append('quantity', this.quantity)
       params.append('unitList', JSON.stringify(this.unitList))
-      await axios.post('http://api.doall.renewwave.co.kr/v1/work/list/modify', params)
+      await axios.post('http://api.doallpack.shop/v1/work/list/modify', params)
         .then(res => {
           console.log(res.data.data)
           this.getMyWorkList()
@@ -312,7 +312,7 @@ export default {
       params.append('sDate', sDate)
       params.append('eDate', eDate)
 
-      axios.post('http://api.doall.renewwave.co.kr/v1/work/list', params)
+      axios.post('http://api.doallpack.shop/v1/work/list', params)
         .then(res => {
           console.log(res.data.data, 'getMyWorkList')
           let result = res.data.data
@@ -345,7 +345,7 @@ export default {
     },
     getMyWorkDetail(eventNo) {
       console.log(eventNo, 'eventNo')
-      axios.get('http://api.doall.renewwave.co.kr/v1/work/list/details/'+eventNo)
+      axios.get('http://api.doallpack.shop/v1/work/list/details/'+eventNo)
         .then(res => {
           console.log(res.data.data[0],'getMyWorkDetail')
           let result = res.data.data[0]

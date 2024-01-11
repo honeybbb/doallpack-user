@@ -134,7 +134,7 @@ export default {
       params.append('sDate', sDate)
       params.append('eDate', eDate)
 
-      axios.post('http://api.doall.renewwave.co.kr/v1/work/list', params)
+      axios.post('http://api.doallpack.shop/v1/work/list', params)
         .then(res => {
           console.log(res.data.data, 'getMyWorkList')
           let result = res.data.data

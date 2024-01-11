@@ -106,7 +106,7 @@ export default {
       }
 
       await axios
-        .post('http://api.doall.renewwave.co.kr/v1/member/auth', saveData)
+        .post('http://api.doallpack.shop/v1/member/auth', saveData)
         .then(res => {
           if(res.data.result) {
             localStorage.setItem('memNo', res.data.data[0].memNo)
