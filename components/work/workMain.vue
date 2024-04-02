@@ -219,7 +219,11 @@ export default {
   },
   filters: {
     splitName(val) {
-      return val.split('^')[0].replace('^\^y','')
+      console.log(val)
+      if(val) {
+        return val.split('^')[0].replace('^\^y','')
+      }
+
     },
   },
   methods: {

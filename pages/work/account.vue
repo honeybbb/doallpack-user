@@ -82,7 +82,10 @@ export default {
       return String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
     splitName(val) {
-      return val.split('^')[0].replace('^\^y','')
+      if(val) {
+        return val.split('^')[0].replace('^\^y','')
+      }
+
     },
   },
   data () {
